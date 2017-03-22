@@ -15,6 +15,7 @@ module.exports = {
 
   entry: Joi.object({
     url: Joi.string().required(),
+    lastmod: Joi.date().iso().default(new Date().toISOString()),
     changeFreq: Joi.string(),
     priority: Joi.number().min(0).max(1),
     links: Joi.array().items(Joi.object({

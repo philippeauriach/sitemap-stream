@@ -94,7 +94,7 @@ class SitemapStream extends EventEmitter {
     if (!this.nbInjectedUrls || this.nbInjectedUrls % this.limit === 0) this.changeWriteStream();
 
     const loc = `<loc>${entry.url}</loc>\n`;
-    const lastMod = `<lastmod>${this.date}</lastmod>\n`;
+    const lastMod = `<lastmod>${entry.date}</lastmod>\n`;
     const changeFreq = entry.changeFreq ? `<changefreq>${entry.changeFreq}</changefreq>\n` : '';
     const priority = entry.priority ? `<priority>${entry.priority}</priority>\n` : '';
     const mobile = this.isMobile ? '<mobile:mobile/>\n' : '';
