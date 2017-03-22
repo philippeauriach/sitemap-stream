@@ -9,12 +9,17 @@ module.exports = {
     limit: Joi.number().integer().min(1).default(50000),
     isMobile: Joi.boolean().default(false),
     outputFolder: Joi.string().default('./'),
-    toCompress: Joi.boolean().default(true)
+    toCompress: Joi.boolean().default(true),
+    hasAlternateLinks: Joi.boolean().default(false)
   }),
 
   entry: Joi.object({
     url: Joi.string().required(),
     changeFreq: Joi.string(),
-    priority: Joi.number().min(0).max(1)
+    priority: Joi.number().min(0).max(1),
+    links: Joi.array().items(Joi.object({
+      hreflang: Joi.string().required(),
+      href: Joi.string().uri().required()
+    }))
   })
 };

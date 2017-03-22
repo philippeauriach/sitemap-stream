@@ -19,6 +19,7 @@ class SitemapStream extends EventEmitter {
     this.isMobile = conf.isMobile;
     this.outputFolder = conf.outputFolder;
     this.toCompress = conf.toCompress;
+    this.hasAlternateLinks = conf.hasAlternateLinks;
 
     this.nbInjectedUrls = 0;
     this.writer = {};
@@ -78,7 +79,8 @@ class SitemapStream extends EventEmitter {
     });
 
     let mobileHeader = this.isMobile ? ' xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"' : '';
-    let header = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${mobileHeader}>`;
+    let alternateHeader = this.hasAlternateLinks  ? ' xmlns:xhtml="http://www.w3.org/1999/xhtml" ' : '';
+    let header = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${mobileHeader}${alternateHeader}>`;
 
     this.writer.write(header);
   }
@@ -96,8 +98,12 @@ class SitemapStream extends EventEmitter {
     const changeFreq = entry.changeFreq ? `<changefreq>${entry.changeFreq}</changefreq>\n` : '';
     const priority = entry.priority ? `<priority>${entry.priority}</priority>\n` : '';
     const mobile = this.isMobile ? '<mobile:mobile/>\n' : '';
+    var links = '';
+    if(this.hasAlternateLinks && entry.links) {
+      links = entry.links.map((link) => `<xhtml:link rel="alternate" hreflang="${link.hreflang}" href="${link.href}"/>`).join('\n') + '\n';
+    }
 
-    const isWritten = this.writer.write(`<url>\n${loc}${lastMod}${changeFreq}${priority}${mobile}</url>\n`);
+    const isWritten = this.writer.write(`<url>\n${loc}${lastMod}${changeFreq}${priority}${mobile}${links}</url>\n`);
 
     this.nbInjectedUrls++;
 
